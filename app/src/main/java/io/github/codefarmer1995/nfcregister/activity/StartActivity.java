@@ -49,7 +49,7 @@ public class StartActivity extends AppCompatActivity {
 
     public void readProperties() {
         Request request = new Request.Builder()
-                .url("https://raw.githubusercontent.com/CodeFarmer1995/NFCRegister/master/properties.json")
+                .url("https://raw.githubusercontent.com/CodeFarmer1995/NFCRegister-Android/master/properties.json")
                 .build();
         NFCRegister.HTTP_CLIENT.newCall(request).enqueue(new Callback() {
             @Override
