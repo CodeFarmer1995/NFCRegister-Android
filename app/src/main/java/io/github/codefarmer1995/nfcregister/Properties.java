@@ -11,7 +11,7 @@ public class Properties {
     private int latest_version_code;
 
     private String changelog;
-    private Uri server;
+    private String server;
 
     public Properties() {
     }
@@ -24,7 +24,7 @@ public class Properties {
         return latest_version_code;
     }
 
-    public Uri getServer() {
+    public String getServer() {
         return server;
     }
 

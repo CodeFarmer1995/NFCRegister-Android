@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.karumi.dexter.Dexter;
@@ -60,6 +61,7 @@ public class StartActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final Properties properties = NFCRegister.parseJson(Properties.class, response.body().string());
+                Log.i("PRO", properties.toString());
                 if (properties != null) {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
@@ -74,7 +76,8 @@ public class StartActivity extends AppCompatActivity {
 
     public void handleProperties(Properties properties) {
 
-        NFCRegister.setServer(properties.getServer());
+        NFCRegister.setServer(Uri.parse(properties.getServer()));
+        //NFCRegister.setServer(Uri.parse("http://10.0.2.2:8080/"));
 
         int currentVersion;
         try {
@@ -109,7 +112,7 @@ public class StartActivity extends AppCompatActivity {
                 public void onDismiss(DialogInterface dialogInterface) {
                     start();
                     if (update[0]) {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/CodeFarmer1995/NFC-Sign-In-Android/releases")));
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/CodeFarmer1995/NFCRegister-Android/releases")));
                     }
                 }
             });
@@ -168,11 +171,21 @@ public class StartActivity extends AppCompatActivity {
             new AlertDialog.Builder(StartActivity.this)
                     .setTitle("无法获取NFC相关信息")
                     .setMessage("您的手机不支持NFC功能，无法进行签到!")
-                    .setPositiveButton(android.R.string.ok, null)
+                    .setPositiveButton(android.R.string.ok, new GoOn())
                     .show();
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                Dexter.withActivity(this)
+
+
+        }
+    }
+
+    public class GoOn implements AlertDialog.OnClickListener{
+
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && StartActivity.this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                Dexter.withActivity(StartActivity.this)
                         .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         .withListener(new PermissionListener() {
                             @Override
@@ -222,6 +235,13 @@ public class StartActivity extends AppCompatActivity {
             NFCRegister.CONFIGURATIONS = Configurations.load(config);
 
             readProperties();
+
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
     }
 }

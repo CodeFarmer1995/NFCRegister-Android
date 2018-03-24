@@ -11,29 +11,29 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import android.app.ProgressDialog;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import com.google.gson.Gson;
 
-import android.content.Intent;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+import java.io.IOException;
 
 import butterknife.ButterKnife;
 import butterknife.BindView;
+import io.github.codefarmer1995.nfcregister.NFCRegister;
 import io.github.codefarmer1995.nfcregister.R;
+import io.github.codefarmer1995.nfcregister.beans.Result;
+import io.github.codefarmer1995.nfcregister.beans.LoginToken;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements STATUS {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 
     @BindView(R.id.input_email)
     EditText _emailText;
-    @BindView(R.id.input_password) EditText _passwordText;
+    @BindView(R.id.input_password)
+    EditText _passwordText;
     @BindView(R.id.btn_login)
     Button _loginButton;
     @BindView(R.id.link_signup)
@@ -44,6 +44,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+
+        NFCRegister.recreateService();
 
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
@@ -60,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
                 // Start the Signup activity
                 Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
                 startActivityForResult(intent, REQUEST_SIGNUP);
-                finish();
+                //finish();
                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
@@ -85,17 +87,60 @@ public class LoginActivity extends AppCompatActivity {
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
+        Call<ResponseBody> call = NFCRegister.SERVICE.login(new LoginToken(email, password));
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                String json = null;
+                try {
+                    json = response.body().string();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Log.i("LOGIN_RESULT", json);
+                Gson gson = new Gson();
+                Result result = gson.fromJson(json, Result.class);
+                if (result.getStatus() == SUCCESS)
+                    new android.os.Handler().postDelayed(
+                            new Runnable() {
+                                public void run() {
+                                    // On complete call either onLoginSuccess or onLoginFailed
+                                    onLoginSuccess();
+                                    // onLoginFailed();
+                                    progressDialog.dismiss();
+                                }
+                            }, 3000);
+                else
+                    new android.os.Handler().postDelayed(
+                            new Runnable() {
+                                public void run() {
+                                    // On complete call either onLoginSuccess or onLoginFailed
+
+                                    onLoginFailed();
+                                    progressDialog.dismiss();
+                                }
+                            }, 3000);
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+
         // TODO: Implement your own authentication logic here.
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onLoginSuccess or onLoginFailed
-                        onLoginSuccess();
-                        // onLoginFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
+
+//        new android.os.Handler().postDelayed(
+//                new Runnable() {
+//                    public void run() {
+//                        // On complete call either onLoginSuccess or onLoginFailed
+//                        onLoginSuccess();
+//                        // onLoginFailed();
+//                        progressDialog.dismiss();
+//                    }
+//                }, 3000);
     }
 
 
@@ -119,6 +164,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
+
         finish();
     }
 

@@ -4,11 +4,13 @@ import android.app.Application;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +28,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Jack on 2018-03-03.
@@ -55,12 +58,13 @@ public class NFCRegister extends Application {
         SERVICE = new Retrofit.Builder()
                 .baseUrl(NFCRegister.getServer().toString())
                 .client(NFCRegister.HTTP_CLIENT)
+                .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(BasicService.class);
     }
 
     public static File getStorageDir() {
-        File dir = new File(Environment.getExternalStorageDirectory(), "JAViewer/");
+        File dir = new File(Environment.getExternalStorageDirectory(), "NFCRegister/");
         dir.mkdirs();
         return dir;
     }
@@ -116,9 +120,12 @@ public class NFCRegister extends Application {
     }
 
     public static <T> T parseJson(Class<T> beanClass, String json) throws JsonParseException {
+        Log.i("Gson",json);
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
-        return gson.fromJson(json, beanClass);
+        T pro=gson.fromJson(json, beanClass);
+        Log.i("PRO",pro.toString());
+        return pro;
     }
 
     @Override
