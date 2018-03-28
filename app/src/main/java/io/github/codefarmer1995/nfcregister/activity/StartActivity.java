@@ -172,6 +172,7 @@ public class StartActivity extends AppCompatActivity {
                     .setTitle("无法获取NFC相关信息")
                     .setMessage("您的手机不支持NFC功能，无法进行签到!")
                     .setPositiveButton(android.R.string.ok, new GoOn())
+                    .setOnDismissListener(new GoOn())
                     .show();
 
 
@@ -179,7 +180,7 @@ public class StartActivity extends AppCompatActivity {
         }
     }
 
-    public class GoOn implements AlertDialog.OnClickListener{
+    public class GoOn implements AlertDialog.OnClickListener,AlertDialog.OnDismissListener{
 
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
@@ -236,6 +237,11 @@ public class StartActivity extends AppCompatActivity {
 
             readProperties();
 
+        }
+
+        @Override
+        public void onDismiss(DialogInterface dialogInterface) {
+            onClick(dialogInterface,0);
         }
     }
 
