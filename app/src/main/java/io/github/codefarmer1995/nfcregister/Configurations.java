@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import io.github.codefarmer1995.nfcregister.adapter.item.DataSource;
 import io.github.codefarmer1995.nfcregister.adapter.item.Meeting;
 
 /**
@@ -20,7 +21,15 @@ public class Configurations {
 
     private ArrayList<Meeting> starred_meetings;
 
+    private DataSource data_source;
 
+    public DataSource getDataSource() {
+        return data_source;
+    }
+
+    public void setDataSource(DataSource data_source) {
+        this.data_source = data_source;
+    }
 
     public ArrayList<Meeting> getStarred_meetings() {
         if(starred_meetings == null)

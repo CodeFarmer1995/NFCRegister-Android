@@ -20,6 +20,9 @@ public interface BasicService {
     @GET(BasicService.context + "/meetings/{page}")
     Call<ResponseBody> getMeetings(@Path("page") int page);
 
+    @GET(BasicService.context + "/registeringMeetings/{page}")
+    Call<ResponseBody> getRegisteringMeetings(@Path("pate") int page);
+
     @POST(BasicService.context + "/login")
     Call<ResponseBody> login(@Body LoginToken loginToken);
 

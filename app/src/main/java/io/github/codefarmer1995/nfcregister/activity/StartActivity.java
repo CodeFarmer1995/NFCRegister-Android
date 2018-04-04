@@ -16,14 +16,17 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 
 import io.github.codefarmer1995.nfcregister.Configurations;
@@ -37,7 +40,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class StartActivity extends AppCompatActivity {
-
 
 
     @Override
@@ -55,7 +57,7 @@ public class StartActivity extends AppCompatActivity {
         NFCRegister.HTTP_CLIENT.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.i("NETWORK",e.toString());
+                Log.i("NETWORK", e.toString());
             }
 
             @Override
@@ -127,123 +129,78 @@ public class StartActivity extends AppCompatActivity {
         finish();
     }
 
+    public void readFile() {
+        Toast.makeText(StartActivity.this, StartActivity.this.getExternalFilesDir(null).toString(), Toast.LENGTH_LONG);
+        File oldConfig = new File(StartActivity.this.getExternalFilesDir(null), "configurations.json");
+        File config = new File(NFCRegister.getStorageDir(), "configurations.json");
+        if (oldConfig.exists()) {
+            oldConfig.renameTo(config);
+        }
+
+        File noMedia = new File(NFCRegister.getStorageDir(), ".nomedia");
+        try {
+            noMedia.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        NFCRegister.CONFIGURATIONS = Configurations.load(config);
+
+        readProperties();
+    }
+
     private void checkPermissions() {
-
-        if (NFCRegister.hasNFC) {
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                    && this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                    && this.checkSelfPermission(Manifest.permission.NFC) != PackageManager.PERMISSION_GRANTED) {
-                Dexter.withActivity(this)
-                        .withPermission(Manifest.permission.NFC)
-                        .withListener(new PermissionListener() {
-                            @Override
-                            public void onPermissionGranted(PermissionGrantedResponse response) {
-                                checkPermissions();
-                            }
-
-                            @Override
-                            public void onPermissionDenied(PermissionDeniedResponse response) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            Dexter.withActivity(StartActivity.this)
+                    .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    .withListener(new PermissionListener() {
+                        @Override
+                        public void onPermissionGranted(PermissionGrantedResponse response) {
+                            if (!NFCRegister.hasNFC)
                                 new AlertDialog.Builder(StartActivity.this)
-                                        .setTitle("NFC权限申请")
-                                        .setMessage("NFCRegister 需要NFC权限进行签到。请您允许。")
-                                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                checkPermissions();
-                                            }
-                                        })
-                                        .show();
-                            }
-
-                            @Override
-                            public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-                                Toast.makeText(StartActivity.this, "onPermissionRationaleShouldBeShown", Toast.LENGTH_LONG);
-                                token.continuePermissionRequest();
-
-                            }
-                        })
-                        .onSameThread()
-                        .check();
-                return;
-            }
-        } else {
-            new AlertDialog.Builder(StartActivity.this)
-                    .setTitle("无法获取NFC相关信息")
-                    .setMessage("您的手机不支持NFC功能，无法进行签到!")
-                    .setPositiveButton(android.R.string.ok, new GoOn())
-                    .setOnDismissListener(new GoOn())
-                    .show();
-
-
-
-        }
-    }
-
-    public class GoOn implements AlertDialog.OnClickListener,AlertDialog.OnDismissListener{
-
-        @Override
-        public void onClick(DialogInterface dialogInterface, int i) {
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && StartActivity.this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                Dexter.withActivity(StartActivity.this)
-                        .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        .withListener(new PermissionListener() {
-                            @Override
-                            public void onPermissionGranted(PermissionGrantedResponse response) {
-                                checkPermissions();
-                            }
-
-                            @Override
-                            public void onPermissionDenied(PermissionDeniedResponse response) {
-                                new AlertDialog.Builder(StartActivity.this)
-                                        .setTitle("权限申请")
+                                        .setTitle("无NFC功能")
                                         .setCancelable(false)
-                                        .setMessage("NFCRegister 需要储存空间权限，储存用户配置。请您允许。")
+                                        .setMessage("您的设备不支持NFC功能，无法签到！")
                                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
                                                 checkPermissions();
+
                                             }
                                         })
                                         .show();
-                            }
+                        }
 
-                            @Override
-                            public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-                                token.continuePermissionRequest();
-                            }
-                        })
-                        .onSameThread()
-                        .check();
-            }
+                        @Override
+                        public void onPermissionDenied(PermissionDeniedResponse response) {
+                            new AlertDialog.Builder(StartActivity.this)
+                                    .setTitle("权限申请")
+                                    .setCancelable(false)
+                                    .setMessage("NFCRegister 需要储存空间权限，储存用户配置。请您允许。")
+                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            checkPermissions();
 
+                                        }
+                                    })
+                                    .show();
+                        }
 
-            Toast.makeText(StartActivity.this, StartActivity.this.getExternalFilesDir(null).toString(), Toast.LENGTH_LONG);
-            File oldConfig = new File(StartActivity.this.getExternalFilesDir(null), "configurations.json");
-            File config = new File(NFCRegister.getStorageDir(), "configurations.json");
-            if (oldConfig.exists()) {
-                oldConfig.renameTo(config);
-            }
-
-            File noMedia = new File(NFCRegister.getStorageDir(), ".nomedia");
-            try {
-                noMedia.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            NFCRegister.CONFIGURATIONS = Configurations.load(config);
-
-            readProperties();
-
+                        @Override
+                        public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                            token.continuePermissionRequest();
+                        }
+                    })
+                    .onSameThread()
+                    .check();
+            return;
         }
 
-        @Override
-        public void onDismiss(DialogInterface dialogInterface) {
-            onClick(dialogInterface,0);
-        }
+        readFile();
     }
+
 
     @Override
     protected void onDestroy() {

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/nav_group1"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_menu_home"
+            android:title="主页" />
+
+        <item
+            android:id="@+id/nav_favourite"
+            android:icon="@drawable/ic_menu_star"
+            android:checkable="false"
+            android:title="收藏夹" />
+    </group>
+
+    <group
+        android:id="@+id/nav_group2"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_registered"
+            android:icon="@drawable/ic_menu_released"
+            android:title="已签到" />
+        <item
+            android:id="@+id/nav_registering"
+            android:icon="@drawable/ic_menu_popular"
+            android:title="未签到" />
+        <item
+            android:id="@+id/nav_absence"
+            android:icon="@drawable/ic_menu_actresses"
+            android:title="缺勤" />
+
+    </group>
+
+    <group android:id="@+id/nav_group3">
+        <item
+            android:id="@+id/nav_github"
+            android:icon="@drawable/ic_menu_github"
+            android:title="GitHub" />
+    </group>
+
+
+</menu>

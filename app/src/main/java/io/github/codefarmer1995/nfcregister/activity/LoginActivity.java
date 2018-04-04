@@ -126,6 +126,7 @@ public class LoginActivity extends AppCompatActivity implements STATUS {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
 
+
             }
         });
 
@@ -169,7 +170,7 @@ public class LoginActivity extends AppCompatActivity implements STATUS {
     }
 
     public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), "登录失败！", Toast.LENGTH_LONG).show();
 
         _loginButton.setEnabled(true);
     }

@@ -152,6 +152,8 @@ public class SignupActivity extends AppCompatActivity implements STATUS {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getBaseContext(), "网络错误！", Toast.LENGTH_LONG).show();
+
 
             }
         });
@@ -176,7 +178,7 @@ public class SignupActivity extends AppCompatActivity implements STATUS {
     }
 
     public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Login failed:EMAIL_EXISTED", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), "注册失败：邮箱已注册！", Toast.LENGTH_LONG).show();
 
         _signupButton.setEnabled(true);
     }

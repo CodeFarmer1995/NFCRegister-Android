@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.github.codefarmer1995.nfcregister.adapter.item.DataSource;
 import io.github.codefarmer1995.nfcregister.network.BasicService;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
@@ -62,6 +64,21 @@ public class NFCRegister extends Application {
                 .build()
                 .create(BasicService.class);
     }
+
+    public static final List<DataSource> DATA_SOURCES = new ArrayList<>();
+
+    public static List<DataSource> getDataSource() {
+        return NFCRegister.CONFIGURATIONS.getDataSource();
+    }
+
+    public static final Map<Integer, Class<? extends Fragment>> FRAGMENTS = new HashMap<Integer, Class<? extends Fragment>>() {{
+        put(R.id.nav_home, HomeFragment.class);
+        put(R.id.nav_popular, PopularFragment.class);
+        put(R.id.nav_released, ReleasedFragment.class);
+        put(R.id.nav_actresses, ActressesFragment.class);
+        put(R.id.nav_genre, GenreTabsFragment.class);
+        put(R.id.nav_favourite, FavouriteTabsFragment.class);
+    }};
 
     public static File getStorageDir() {
         File dir = new File(Environment.getExternalStorageDirectory(), "NFCRegister/");
@@ -132,5 +149,9 @@ public class NFCRegister extends Application {
     public void onCreate() {
         super.onCreate();
         hasNFC = getPackageManager().hasSystemFeature(PackageManager.FEATURE_NFC);
+    }
+
+    public static boolean Objects_equals(Object a, Object b) {
+        return (a == b) || (a != null && a.equals(b));
     }
 }
