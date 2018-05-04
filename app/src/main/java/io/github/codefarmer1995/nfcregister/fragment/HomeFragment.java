@@ -1,7 +1,6 @@
 package io.github.codefarmer1995.nfcregister.fragment;
 
 import io.github.codefarmer1995.nfcregister.NFCRegister;
-import io.github.javiewer.JAViewer;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 

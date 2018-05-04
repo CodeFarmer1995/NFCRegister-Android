@@ -29,11 +29,11 @@ import java.net.URLEncoder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import io.github.codefarmer1995.nfcregister.R;
 import io.github.codefarmer1995.nfcregister.NFCRegister;
+import io.github.codefarmer1995.nfcregister.R;
 import io.github.codefarmer1995.nfcregister.adapter.NavigationSpinnerAdapter;
 import io.github.codefarmer1995.nfcregister.adapter.item.DataSource;
+import io.github.codefarmer1995.nfcregister.fragment.ExtendedAppBarFragment;
 import io.github.codefarmer1995.nfcregister.network.BasicService;
 import io.github.codefarmer1995.nfcregister.view.SimpleSearchView;
 
@@ -84,6 +84,8 @@ public class MainActivity extends AppCompatActivity
         if (savedInstanceState != null) {
             idOfMenuItem = savedInstanceState.getInt("MenuSelectedItemId", R.id.nav_home);
         }
+
+        //设置主页
         mNavigationView.setNavigationItemSelectedListener(this);
         MenuItem selectedItem = mNavigationView.getMenu().findItem(idOfMenuItem);
         mNavigationView.setCheckedItem(selectedItem.getItemId());
@@ -146,7 +148,7 @@ public class MainActivity extends AppCompatActivity
 
         FragmentTransaction transaction = this.fragmentManager.beginTransaction();
         for (int id : NFCRegister.FRAGMENTS.keySet()) {
-            Class<? extends Fragment> fragmentClass = JAViewer.FRAGMENTS.get(id);
+            Class<? extends Fragment> fragmentClass = NFCRegister.FRAGMENTS.get(id);
             try {
                 Fragment fragment = fragmentClass.getConstructor(new Class[0]).newInstance();
                 transaction.add(R.id.content, fragment, fragmentClass.getSimpleName()).hide(fragment);
@@ -187,7 +189,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setFragment(int id, CharSequence title) {
-        this.setFragment(fragmentManager.findFragmentByTag(JAViewer.FRAGMENTS.get(id).getSimpleName()), title);
+        this.setFragment(fragmentManager.findFragmentByTag(NFCRegister.FRAGMENTS.get(id).getSimpleName()), title);
     }
 
     @Override
@@ -215,7 +217,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+            getMenuInflater().inflate(R.menu.main, menu);
 
         MenuItem item = menu.findItem(R.id.action_search);
         mSearchView.setMenuItem(item);
@@ -223,7 +225,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public boolean onQueryTextSubmit(String query) {
                 try {
-                    startActivity(MovieListActivity.newIntent(MainActivity.this, query + " 的搜索结果", JAViewer.getDataSource().getLink() + BasicService.LANGUAGE_NODE + "/search/" + URLEncoder.encode(query, "UTF-8")));
+                    startActivity(MeetingListActivity.newIntent(MainActivity.this, query + " 的搜索结果", NFCRegister.getServer().toString() + BasicService.context + "/search/" + URLEncoder.encode(query, "UTF-8")));
                 } catch (UnsupportedEncodingException e) {
                     return false;
                 }
@@ -247,7 +249,7 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.nav_github: {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/SplashCodes/JAViewer/releases"));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/CodeFarmer1995/NFCRegister-Android/releases"));
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 break;

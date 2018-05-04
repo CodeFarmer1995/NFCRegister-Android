@@ -3,5 +3,9 @@
     <string name="app_name">NFCRegister</string>
     <string name="navigation_drawer_open">打开抽屉</string>
     <string name="navigation_drawer_close">关闭抽屉</string>
+    <string name="meeting_date_tag">meeting date</string>
+    <string name="meeting_absence">缺勤</string>
+    <string name="meeting_registered">已签到</string>
+    <string name="meeting_registering"> 未签到</string>
 
 </resources>

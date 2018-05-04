@@ -4,23 +4,26 @@ import android.support.v7.widget.RecyclerView;
 
 import java.util.List;
 
+import io.github.codefarmer1995.nfcregister.adapter.item.MeetingItem;
+
 /**
  * Project: JAViewer
  */
 
 public abstract class ItemAdapter<I, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
-    private List<I> items;
 
-    public ItemAdapter(List<I> items) {
+    private List<MeetingItem> items;
+
+    public ItemAdapter(List<MeetingItem> items) {
         this.items = items;
     }
 
-    public List<I> getItems() {
+    public List<MeetingItem> getItems() {
         return items;
     }
 
-    public void setItems(List<I> items) {
+    public void setItems(List<MeetingItem> items) {
         int size = this.getItems().size();
         if (size > 0) {
             this.getItems().clear();

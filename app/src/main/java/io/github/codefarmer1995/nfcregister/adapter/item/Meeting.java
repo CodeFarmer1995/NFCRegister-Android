@@ -1,17 +1,26 @@
 package io.github.codefarmer1995.nfcregister.adapter.item;
 
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 
-public class Meeting {
+public class Meeting implements Serializable{
     private int id;
     private Timestamp meetingTime;
     private String location;
     private int moderator;
     private String title;
     private String content;
+    private String moderatorAvatarURL;
 
+    public String getModeratorAvatarURL() {
+        return moderatorAvatarURL;
+    }
+
+    public void setModeratorAvatarURL(String moderatorAvatarURL) {
+        this.moderatorAvatarURL = moderatorAvatarURL;
+    }
 
     public int getId() {
         return id;

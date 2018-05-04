@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_meeting"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/card_view_vertical_margin"
+    android:layout_marginLeft="@dimen/card_view_horizontal_margin"
+    android:layout_marginRight="@dimen/card_view_horizontal_margin"
+    android:layout_marginTop="@dimen/card_view_vertical_margin"
+    android:background="?card_background"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardBackgroundColor="?card_background"
+    app:cardCornerRadius="@dimen/card_view_corner_radius">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_normal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_user_avatar"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="@dimen/spacing_normal"
+            android:background="?android:selectableItemBackgroundBorderless" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_meeting_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:text="Meeting"
+                    android:textColor="?colorAccent"
+                    android:textSize="@dimen/text_normal" />
+
+                <TextView
+                    android:id="@+id/tv_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/spacing_mini"
+                    android:textColor="?android:textColorSecondary"
+                    android:textSize="@dimen/text_mini"
+                    android:text="status"/>
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/status_color"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/spacing_mini"
+                    app:srcCompat="@drawable/ic_dot" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_meeting_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="4"
+                android:paddingBottom="@dimen/spacing_mini"
+                android:paddingTop="@dimen/spacing_mini"
+                android:text="Meeting Content"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="@dimen/text_small" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/owner_lay"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:tint="?android:textColorSecondary"
+                        app:srcCompat="@drawable/ic_menu_person" />
+
+                    <TextView
+                        android:id="@+id/tv_moderator_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing_mini"
+                        android:text="moderator"
+                        android:textColor="?android:textColorSecondary"
+                        android:textSize="@dimen/text_mini" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/fork_mark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_mini"
+                    android:layout_marginRight="@dimen/spacing_mini"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:tint="?android:textColorPrimary"
+                        app:srcCompat="@drawable/ic_meeting_date" />
+                    <TextView
+                        android:id="@+id/tv_meeting_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_mini"
+                        android:text="@string/meeting_date_tag"
+                        android:textColor="?android:textColorPrimary"
+                        android:textSize="@dimen/text_mini" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</android.support.v7.widget.CardView>
